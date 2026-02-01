@@ -24,7 +24,12 @@ public class Calculator implements ActionListener {
 
     //Font Style For Text used in Program's Frame
     Font myFont = new Font("Monospaced", Font.BOLD, 30);
+
     DecimalFormat df = new DecimalFormat("#.########");
+
+    Color bgColor = Color.BLACK;
+    Color buttonColor = new Color(45, 45, 45); // dark gray
+    Color textColor = Color.WHITE;
 
     //Variables for Solving Operations
     double num1 = 0,num2 = 0, result =0;
@@ -35,7 +40,7 @@ public class Calculator implements ActionListener {
     Calculator() {
 
         //The Window That will show when we run the Calculator
-        frame = new JFrame("Calculator");
+        frame = new JFrame("DERWIN BELL'S AMAZING CALCULATOR");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //JPanel that will hold all of our buttons
@@ -48,6 +53,10 @@ public class Calculator implements ActionListener {
         textField.setEditable(false);
         textField.setHorizontalAlignment(JTextField.RIGHT);
         textField.setBorder(new EmptyBorder(10, 10, 10, 10));
+        textField.setBackground(bgColor);
+        textField.setForeground(textColor);
+        textField.setCaretColor(textColor); // cursor color (good habit)
+        textField.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         root.add(textField, BorderLayout.NORTH);
 
 
@@ -81,6 +90,12 @@ public class Calculator implements ActionListener {
             funcButtons[i].addActionListener(this);
             funcButtons[i].setFont(myFont);
             funcButtons[i].setFocusable(false);
+
+            funcButtons[i].setBackground(buttonColor);
+            funcButtons[i].setForeground(textColor);
+
+            funcButtons[i].setOpaque(true);
+            funcButtons[i].setBorderPainted(false);
         }
 
         //Every time a Number button is pressed add ActionListener so we can take in the input
@@ -89,10 +104,18 @@ public class Calculator implements ActionListener {
             numButtons[j].addActionListener(this);
             numButtons[j].setFont(myFont);
             numButtons[j].setFocusable(false);
+
+            numButtons[j].setBackground(buttonColor);
+            numButtons[j].setForeground(textColor);
+            numButtons[j].setOpaque(true);
+
+            numButtons[j].setBorderPainted(false);
         }
 
         // Center grid (4x4) MUST be exactly 16 buttons
         panel = new JPanel(new GridLayout(4, 4, 10, 10));
+
+        panel.setBackground(bgColor);
 
         // Standard calculator layout:
         // 7 8 9 /
@@ -123,18 +146,28 @@ public class Calculator implements ActionListener {
 
         // Bottom row (Clear, Delete, %, =)
         JPanel bottom = new JPanel(new GridLayout(1, 4, 10, 10));
+        bottom.setBackground(bgColor);
+
         bottom.add(clrButton);
         bottom.add(delButton);
         bottom.add(remainButton);
         bottom.add(equButton);
 
+        styleButton(clrButton);
+        styleButton(delButton);
+        styleButton(equButton);
+        styleButton(remainButton);
+        styleButton(negPosButton);
+
         root.add(bottom, BorderLayout.SOUTH);
+
 
         frame.setContentPane(root);
         frame.pack();
         frame.setResizable(false);
         frame.setLocationRelativeTo(null); // centers on screen
         frame.setVisible(true);
+        frame.getContentPane().setBackground(bgColor);
 
     }
 
@@ -233,5 +266,14 @@ public class Calculator implements ActionListener {
 
 
 
+    }
+    private void styleButton(JButton button) {
+        button.setFont(myFont);
+        button.setFocusable(false);
+        button.setBorderPainted(false);
+        button.setFocusPainted(false);
+        button.setOpaque(true);            // 👈 IMPORTANT
+        button.setBackground(buttonColor);
+        button.setForeground(textColor);
     }
 }
