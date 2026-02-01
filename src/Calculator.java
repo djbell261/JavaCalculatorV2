@@ -1,12 +1,15 @@
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 
-import java.text.DecimalFormat;
 
+import javax.swing.border.EmptyBorder;
+import java.text.DecimalFormat;
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 
 // This Class can now understand user Action Events
 public class Calculator implements ActionListener {
@@ -31,20 +34,25 @@ public class Calculator implements ActionListener {
     //Calculator Constructor used to actually build the Calculator
     Calculator() {
 
+        //The Window That will show when we run the Calculator
         frame = new JFrame("Calculator");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(420, 550);
-        frame.setLayout(null);
 
+        //JPanel that will hold all of our buttons
+        JPanel root = new JPanel(new BorderLayout(12, 12));
+        root.setBorder(new EmptyBorder(12, 12, 12, 12));
 
+        // Display
         textField = new JTextField();
-        textField.setBounds(50,25,300,50);
         textField.setFont(myFont);
         textField.setEditable(false);
+        textField.setHorizontalAlignment(JTextField.RIGHT);
+        textField.setBorder(new EmptyBorder(10, 10, 10, 10));
+        root.add(textField, BorderLayout.NORTH);
 
 
 
-
+        //how the Buttons display to the user
         addButton = new JButton("+");
         subButton = new JButton("-");
         multiButton = new JButton("*");
@@ -56,6 +64,7 @@ public class Calculator implements ActionListener {
         decButton = new JButton(".");
         clrButton = new JButton("Clear");
 
+        //Assigning the function buttons to our Array to check through
         funcButtons[0] = addButton;
         funcButtons[1] = subButton;
         funcButtons[2] = multiButton;
@@ -67,12 +76,14 @@ public class Calculator implements ActionListener {
         funcButtons[8] = decButton;
         funcButtons[9] = clrButton;
 
+        //Every time a Function button is pressed add ActionListener so we can take in the input
         for (int i=0; i<10; i++){
             funcButtons[i].addActionListener(this);
             funcButtons[i].setFont(myFont);
             funcButtons[i].setFocusable(false);
         }
 
+        //Every time a Number button is pressed add ActionListener so we can take in the input
         for (int j = 0; j < 10; j++){
             numButtons[j] = new JButton(String.valueOf(j));
             numButtons[j].addActionListener(this);
@@ -80,48 +91,57 @@ public class Calculator implements ActionListener {
             numButtons[j].setFocusable(false);
         }
 
-        delButton.setBounds(50,470,145,50);
-        clrButton.setBounds(205,470,145,50);
-        negPosButton.setBounds(150,400,100,70);
+        // Center grid (4x4) MUST be exactly 16 buttons
+        panel = new JPanel(new GridLayout(4, 4, 10, 10));
 
-        panel = new JPanel();
-        panel.setBounds(50,100,300,300);
-        panel.setLayout(new GridLayout(4,4,10,10));
+        // Standard calculator layout:
+        // 7 8 9 /
+        // 4 5 6 *
+        // 1 2 3 -
+        // +/- 0 . +
+        panel.add(numButtons[7]);
+        panel.add(numButtons[8]);
+        panel.add(numButtons[9]);
+        panel.add(divButton);
+
+        panel.add(numButtons[4]);
+        panel.add(numButtons[5]);
+        panel.add(numButtons[6]);
+        panel.add(multiButton);
 
         panel.add(numButtons[1]);
         panel.add(numButtons[2]);
         panel.add(numButtons[3]);
-        panel.add(numButtons[4]);
-        panel.add(addButton);
-        panel.add(numButtons[5]);
-        panel.add(numButtons[6]);
-        panel.add(numButtons[7]);
-        panel.add(numButtons[8]);
         panel.add(subButton);
-        panel.add(numButtons[9]);
+
+        panel.add(negPosButton);
         panel.add(numButtons[0]);
-        panel.add(multiButton);
-        panel.add(divButton);
-        panel.add(remainButton);
         panel.add(decButton);
-        panel.add(equButton);
-        panel.add(clrButton);
+        panel.add(addButton);
 
+        root.add(panel, BorderLayout.CENTER);
 
+        // Bottom row (Clear, Delete, %, =)
+        JPanel bottom = new JPanel(new GridLayout(1, 4, 10, 10));
+        bottom.add(clrButton);
+        bottom.add(delButton);
+        bottom.add(remainButton);
+        bottom.add(equButton);
 
-        frame.add(panel);
-        frame.add(negPosButton);
-        frame.add(delButton);
-        frame.add(clrButton);
-        frame.add(textField);
+        root.add(bottom, BorderLayout.SOUTH);
+
+        frame.setContentPane(root);
+        frame.pack();
+        frame.setResizable(false);
+        frame.setLocationRelativeTo(null); // centers on screen
         frame.setVisible(true);
-
 
     }
 
     public static void main(String[] args) {
 
         Calculator calc = new Calculator();
+
 
         }
 
@@ -165,8 +185,13 @@ public class Calculator implements ActionListener {
         if (e.getSource() == negPosButton) {
            double temp = Double.parseDouble(textField.getText());
            temp *= -1;
-           textField.setText(String.valueOf(temp));
+
+            textField.setText(df.format(temp));
         }
+
+        /*Switch Statements to preform the math on the Two numbers from user input
+        After Pressing the Equal Sign
+        * */
 
         if(e.getSource() == equButton){
             num2=Double.parseDouble(textField.getText());
@@ -176,7 +201,7 @@ public class Calculator implements ActionListener {
                     result = num1 + num2;
                     break;
                 case '-':
-                    result = num1 -num2;
+                    result = num1 - num2;
                     break;
                 case '*':
                     result = num1 * num2;
@@ -189,13 +214,15 @@ public class Calculator implements ActionListener {
                     break;
 
             }
-            textField.setText(String.valueOf(result));
+            textField.setText(df.format(result));
             num1=result;
         }
+        // Clear Display When Pressed
         if(e.getSource() == clrButton){
             textField.setText("");
         }
 
+        // Delete Number when Pressed
         if(e.getSource() == delButton){
             String string = textField.getText();
             textField.setText("");
